@@ -80,6 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "KINETRA — Performance Systems" },
+      { name: "description", content: "Kinetic Edge Hub is a professional sports website showcasing four distinct training systems." },
+      { property: "og:description", content: "Kinetic Edge Hub is a professional sports website showcasing four distinct training systems." },
+      { name: "twitter:description", content: "Kinetic Edge Hub is a professional sports website showcasing four distinct training systems." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/qzUEYgqpMCOAvOoL6czFDDtE5ui1/social-images/social-1780665519385-1000018153.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/qzUEYgqpMCOAvOoL6czFDDtE5ui1/social-images/social-1780665519385-1000018153.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
