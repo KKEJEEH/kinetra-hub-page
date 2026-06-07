@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getSystemBySlug } from "@/lib/sanity";
 
-export const Route = createFileRoute("/$system")({
+export const Route = createFileRoute("/$system/")({
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData({
       queryKey: ["system", params.system],

@@ -9,18 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SystemRouteImport } from './routes/$system'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SystemIndexRouteImport } from './routes/$system.index'
 import { Route as SystemSubRouteImport } from './routes/$system.$sub'
 
-const SystemRoute = SystemRouteImport.update({
-  id: '/$system',
-  path: '/$system',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemIndexRoute = SystemIndexRouteImport.update({
+  id: '/$system/',
+  path: '/$system/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SystemSubRoute = SystemSubRouteImport.update({
@@ -31,47 +31,47 @@ const SystemSubRoute = SystemSubRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$system': typeof SystemRouteWithChildren
   '/$system/$sub': typeof SystemSubRoute
+  '/$system/': typeof SystemIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$system': typeof SystemRouteWithChildren
   '/$system/$sub': typeof SystemSubRoute
+  '/$system': typeof SystemIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$system': typeof SystemRouteWithChildren
   '/$system/$sub': typeof SystemSubRoute
+  '/$system/': typeof SystemIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$system' | '/$system/$sub'
+  fullPaths: '/' | '/$system/$sub' | '/$system/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$system' | '/$system/$sub'
-  id: '__root__' | '/' | '/$system' | '/$system/$sub'
+  to: '/' | '/$system/$sub' | '/$system'
+  id: '__root__' | '/' | '/$system/$sub' | '/$system/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SystemRoute: typeof SystemRouteWithChildren
+  SystemIndexRoute: typeof SystemIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$system': {
-      id: '/$system'
-      path: '/$system'
-      fullPath: '/$system'
-      preLoaderRoute: typeof SystemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$system/': {
+      id: '/$system/'
+      path: '/$system'
+      fullPath: '/$system/'
+      preLoaderRoute: typeof SystemIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$system/$sub': {
@@ -84,21 +84,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface SystemRouteChildren {
-  SystemSubRoute: typeof SystemSubRoute
-}
-
-const SystemRouteChildren: SystemRouteChildren = {
-  SystemSubRoute: SystemSubRoute,
-}
-
-const SystemRouteWithChildren =
-  SystemRoute._addFileChildren(SystemRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SystemRoute: SystemRouteWithChildren,
+  SystemIndexRoute: SystemIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
