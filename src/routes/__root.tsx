@@ -16,16 +16,16 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">Error 404</p>
-        <h1 className="mt-4 font-display text-6xl font-bold tracking-tight">Off Track</h1>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">Errore 404</p>
+        <h1 className="mt-4 font-display text-6xl font-bold tracking-tight">Fuori pista</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          This route doesn't exist in the KINETRA system.
+          Questa pagina non esiste nel sistema KINETRA.
         </p>
         <Link
           to="/"
           className="mt-8 inline-flex items-center justify-center rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition hover:opacity-90"
         >
-          Back to Home
+          Torna alla home
         </Link>
       </div>
     </div>
