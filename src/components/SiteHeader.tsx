@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 
 const NAV = [
-  { to: "/velocity", label: "Velocità" },
-  { to: "/strength", label: "Forza" },
-  { to: "/nutrition", label: "Nutrizione" },
-  { to: "/recovery", label: "Recupero" },
+  { slug: "velocity", label: "Velocità" },
+  { slug: "strength", label: "Forza" },
+  { slug: "nutrition", label: "Nutrizione" },
+  { slug: "recovery", label: "Recupero" },
 ] as const;
 
 export function SiteHeader() {
@@ -21,8 +21,9 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-7 md:flex">
           {NAV.map((item) => (
             <Link
-              key={item.to}
-              to={item.to}
+              key={item.slug}
+              to="/$system"
+              params={{ system: item.slug }}
               className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground transition hover:text-accent"
               activeProps={{ className: "text-accent" }}
             >

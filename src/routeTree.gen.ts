@@ -9,30 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VelocityRouteImport } from './routes/velocity'
-import { Route as StrengthRouteImport } from './routes/strength'
-import { Route as RecoveryRouteImport } from './routes/recovery'
-import { Route as NutritionRouteImport } from './routes/nutrition'
+import { Route as SystemRouteImport } from './routes/$system'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SystemSubRouteImport } from './routes/$system.$sub'
 
-const VelocityRoute = VelocityRouteImport.update({
-  id: '/velocity',
-  path: '/velocity',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StrengthRoute = StrengthRouteImport.update({
-  id: '/strength',
-  path: '/strength',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RecoveryRoute = RecoveryRouteImport.update({
-  id: '/recovery',
-  path: '/recovery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NutritionRoute = NutritionRouteImport.update({
-  id: '/nutrition',
-  path: '/nutrition',
+const SystemRoute = SystemRouteImport.update({
+  id: '/$system',
+  path: '/$system',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -40,73 +23,48 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SystemSubRoute = SystemSubRouteImport.update({
+  id: '/$sub',
+  path: '/$sub',
+  getParentRoute: () => SystemRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/nutrition': typeof NutritionRoute
-  '/recovery': typeof RecoveryRoute
-  '/strength': typeof StrengthRoute
-  '/velocity': typeof VelocityRoute
+  '/$system': typeof SystemRouteWithChildren
+  '/$system/$sub': typeof SystemSubRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/nutrition': typeof NutritionRoute
-  '/recovery': typeof RecoveryRoute
-  '/strength': typeof StrengthRoute
-  '/velocity': typeof VelocityRoute
+  '/$system': typeof SystemRouteWithChildren
+  '/$system/$sub': typeof SystemSubRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/nutrition': typeof NutritionRoute
-  '/recovery': typeof RecoveryRoute
-  '/strength': typeof StrengthRoute
-  '/velocity': typeof VelocityRoute
+  '/$system': typeof SystemRouteWithChildren
+  '/$system/$sub': typeof SystemSubRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/nutrition' | '/recovery' | '/strength' | '/velocity'
+  fullPaths: '/' | '/$system' | '/$system/$sub'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/nutrition' | '/recovery' | '/strength' | '/velocity'
-  id: '__root__' | '/' | '/nutrition' | '/recovery' | '/strength' | '/velocity'
+  to: '/' | '/$system' | '/$system/$sub'
+  id: '__root__' | '/' | '/$system' | '/$system/$sub'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  NutritionRoute: typeof NutritionRoute
-  RecoveryRoute: typeof RecoveryRoute
-  StrengthRoute: typeof StrengthRoute
-  VelocityRoute: typeof VelocityRoute
+  SystemRoute: typeof SystemRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/velocity': {
-      id: '/velocity'
-      path: '/velocity'
-      fullPath: '/velocity'
-      preLoaderRoute: typeof VelocityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/strength': {
-      id: '/strength'
-      path: '/strength'
-      fullPath: '/strength'
-      preLoaderRoute: typeof StrengthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/recovery': {
-      id: '/recovery'
-      path: '/recovery'
-      fullPath: '/recovery'
-      preLoaderRoute: typeof RecoveryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nutrition': {
-      id: '/nutrition'
-      path: '/nutrition'
-      fullPath: '/nutrition'
-      preLoaderRoute: typeof NutritionRouteImport
+    '/$system': {
+      id: '/$system'
+      path: '/$system'
+      fullPath: '/$system'
+      preLoaderRoute: typeof SystemRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -116,16 +74,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$system/$sub': {
+      id: '/$system/$sub'
+      path: '/$sub'
+      fullPath: '/$system/$sub'
+      preLoaderRoute: typeof SystemSubRouteImport
+      parentRoute: typeof SystemRoute
+    }
   }
 }
 
+interface SystemRouteChildren {
+  SystemSubRoute: typeof SystemSubRoute
+}
+
+const SystemRouteChildren: SystemRouteChildren = {
+  SystemSubRoute: SystemSubRoute,
+}
+
+const SystemRouteWithChildren =
+  SystemRoute._addFileChildren(SystemRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  NutritionRoute: NutritionRoute,
-  RecoveryRoute: RecoveryRoute,
-  StrengthRoute: StrengthRoute,
-  VelocityRoute: VelocityRoute,
+  SystemRoute: SystemRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
