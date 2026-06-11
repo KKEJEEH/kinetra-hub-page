@@ -13,6 +13,7 @@ import { Route as SystemRouteImport } from './routes/$system'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SystemIndexRouteImport } from './routes/$system.index'
 import { Route as SystemSubRouteImport } from './routes/$system.$sub'
+import { Route as PreviewSystemSubRouteImport } from './routes/preview.$system.$sub'
 
 const SystemRoute = SystemRouteImport.update({
   id: '/$system',
@@ -34,17 +35,24 @@ const SystemSubRoute = SystemSubRouteImport.update({
   path: '/$sub',
   getParentRoute: () => SystemRoute,
 } as any)
+const PreviewSystemSubRoute = PreviewSystemSubRouteImport.update({
+  id: '/preview/$system/$sub',
+  path: '/preview/$system/$sub',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$system': typeof SystemRouteWithChildren
   '/$system/$sub': typeof SystemSubRoute
   '/$system/': typeof SystemIndexRoute
+  '/preview/$system/$sub': typeof PreviewSystemSubRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$system/$sub': typeof SystemSubRoute
   '/$system': typeof SystemIndexRoute
+  '/preview/$system/$sub': typeof PreviewSystemSubRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -52,18 +60,31 @@ export interface FileRoutesById {
   '/$system': typeof SystemRouteWithChildren
   '/$system/$sub': typeof SystemSubRoute
   '/$system/': typeof SystemIndexRoute
+  '/preview/$system/$sub': typeof PreviewSystemSubRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$system' | '/$system/$sub' | '/$system/'
+  fullPaths:
+    | '/'
+    | '/$system'
+    | '/$system/$sub'
+    | '/$system/'
+    | '/preview/$system/$sub'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$system/$sub' | '/$system'
-  id: '__root__' | '/' | '/$system' | '/$system/$sub' | '/$system/'
+  to: '/' | '/$system/$sub' | '/$system' | '/preview/$system/$sub'
+  id:
+    | '__root__'
+    | '/'
+    | '/$system'
+    | '/$system/$sub'
+    | '/$system/'
+    | '/preview/$system/$sub'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SystemRoute: typeof SystemRouteWithChildren
+  PreviewSystemSubRoute: typeof PreviewSystemSubRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -96,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SystemSubRouteImport
       parentRoute: typeof SystemRoute
     }
+    '/preview/$system/$sub': {
+      id: '/preview/$system/$sub'
+      path: '/preview/$system/$sub'
+      fullPath: '/preview/$system/$sub'
+      preLoaderRoute: typeof PreviewSystemSubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -115,17 +143,8 @@ const SystemRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SystemRoute: SystemRouteWithChildren,
+  PreviewSystemSubRoute: PreviewSystemSubRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
