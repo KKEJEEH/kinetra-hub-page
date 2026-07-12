@@ -197,6 +197,63 @@ function SystemRoute() {
           )}
         </div>
 
+        <div className="mt-20">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
+                Future Articles
+              </p>
+              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight md:text-3xl">
+                In arrivo.
+              </h2>
+            </div>
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              {system.articles.length.toString().padStart(2, "0")} articoli
+            </span>
+          </div>
+
+          {system.articles.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-card/30 p-10 text-center">
+              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                Nessun articolo ancora pubblicato per questo sistema.
+              </p>
+            </div>
+          ) : (
+            <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
+              {system.articles.map((a, i) => (
+                <li
+                  key={a._id}
+                  className="group flex items-start gap-6 p-6 transition hover:bg-accent/5"
+                >
+                  <span className="mt-1 font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-lg font-bold leading-tight">
+                      {a.title}
+                    </h3>
+                    {a.excerpt && (
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                        {a.excerpt}
+                      </p>
+                    )}
+                    {a.publishedAt && (
+                      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {new Date(a.publishedAt).toLocaleDateString("it-IT", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                    )}
+                  </div>
+                  <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="mt-14">
           <Link
             to="/"
