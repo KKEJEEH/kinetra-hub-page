@@ -27,8 +27,18 @@ export interface SanitySubcategory {
   content?: unknown[];
 }
 
+export interface SanityArticle {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  systemSlug: string;
+  publishedAt?: string;
+}
+
 export interface SanitySystemWithSubs extends SanitySystem {
   subcategories: SanitySubcategory[];
+  articles: SanityArticle[];
 }
 
 const systemFields = `
@@ -51,6 +61,15 @@ const subFields = `
   content
 `;
 
+const articleFields = `
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  systemSlug,
+  publishedAt
+`;
+
 export async function getAllSystems(): Promise<SanitySystem[]> {
   return sanityClient.fetch(
     `*[_type == "system"] | order(order asc) { ${systemFields} }`
@@ -65,6 +84,9 @@ export async function getSystemBySlug(
       ${systemFields},
       "subcategories": *[_type == "subcategory" && systemSlug == $slug] | order(order asc) {
         ${subFields}
+      },
+      "articles": *[_type == "article" && systemSlug == $slug] | order(coalesce(publishedAt, _createdAt) desc) {
+        ${articleFields}
       }
     }`,
     { slug }
