@@ -54,12 +54,12 @@ function SubcategoryRoute() {
   const system = sub.system;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen paper-bg text-foreground">
       <SiteHeader />
 
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-bg opacity-50" />
-        <div className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-accent/15 blur-[140px]" />
+        <div className="absolute inset-0 grid-bg opacity-60" />
+        <div className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-accent/10 blur-[120px]" />
         <div className="relative mx-auto max-w-4xl px-6 pb-20 pt-16 md:pb-28 md:pt-24">
           {system && (
             <Link
@@ -87,7 +87,7 @@ function SubcategoryRoute() {
       </section>
 
       <section className="mx-auto max-w-4xl px-6 py-20 md:py-24">
-        <article className="prose prose-invert max-w-none">
+        <article className="prose max-w-none prose-headings:font-display prose-headings:font-black prose-p:font-serif prose-p:text-foreground/85">
           {Array.isArray(sub.content) && sub.content.length > 0 ? (
             <PortableTextLite blocks={sub.content as PtBlock[]} />
           ) : (

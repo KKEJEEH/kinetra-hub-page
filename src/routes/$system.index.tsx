@@ -81,13 +81,13 @@ function SystemRoute() {
   if (!system) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen paper-bg text-foreground">
       <SiteHeader />
 
       {/* HERO with animation */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-bg opacity-40" />
-        <div className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-accent/15 blur-[140px]" />
+        <div className="absolute inset-0 grid-bg opacity-60" />
+        <div className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-accent/10 blur-[120px]" />
 
         <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-12 md:pb-24 md:pt-20">
           <Link
